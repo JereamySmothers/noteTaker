@@ -3,9 +3,13 @@ const path = require("path");
 const router = require("express").Router();
 
 // connects to index
-router.get();
+router.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "../index.html"));
+});
 
 // connects to notes
-router.get();
+router.get("/notes", (req, res) => {
+    res.sendFile(path.join(__dirname, "../notes.html"));
+});
 
 module.exports = router;
