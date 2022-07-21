@@ -1,7 +1,7 @@
 // npm package and local dependency
 const router = require("express").Router();
 const fs = require("fs");
-const note = require("../db/note");
+const note = require("../../db/note");
 
 // empty array to store notes
 const notes = [];
@@ -25,13 +25,13 @@ router.get("/notes/:id", (req, res) => {
 
     for (let i = 0; i < notes.length; i++) {
         if (notes[i].id = id) {
-            return.json(notes[i]);
+            return res.json(notes[i]);
         };
     };
 });
 
 // post or update notes
-router.post("/notes", (req, res) {
+router.post("/notes", (req, res) => {
     fs.readFileSync('./db/db.json', (err, data) => {
         if (err) throw (err);
         notes = JSON.parse(data);
@@ -44,7 +44,7 @@ router.post("/notes", (req, res) {
     } else {
         let newNote = req.body;
         for (let i = 0; i < notes.length; i++) {
-            if (new.id === notes[i].id) {
+            if (newNote.id === notes[i].id) {
                 notes.splice(i, 1, newNote);
             };
         };
