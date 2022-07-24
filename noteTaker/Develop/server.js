@@ -10,6 +10,9 @@ const PORT = process.env.PORT || 3001;
 // express data parsing
 app.use(express.urlencoded({ extended: true }));
 
+//express allowing public folder access to www
+app.use(express.static('public'));
+
 // express data conversion to json
 app.use(express.json());
 app.use(express.static(__dirname + '/'));

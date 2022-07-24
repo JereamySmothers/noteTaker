@@ -4,7 +4,7 @@ const fs = require("fs");
 const note = require("../../db/note");
 
 // empty array to store notes
-const notes = [];
+let notes = [];
 
 // acquire notes via .json and return data
 router.get("/notes", (req, res) => {
@@ -32,50 +32,53 @@ router.get("/notes/:id", (req, res) => {
 
 // post or update notes
 router.post("/notes", (req, res) => {
-    fs.readFileSync('./db/db.json', (err, data) => {
+    fs.readFile('./db/db.json', 'utf8', (err, data) => {
         if (err) throw (err);
         notes = JSON.parse(data);
-    });
-    
-    let newNote;
-    if (req.body.id === -1) {
-        let newNote = new note(req.body.title, req.body.body);
-        notes.push(newNote);
-    } else {
-        let newNote = req.body;
-        for (let i = 0; i < notes.length; i++) {
-            if (newNote.id === notes[i].id) {
-                notes.splice(i, 1, newNote);
-            };
-        };
-    };
 
-    fs.writeFile("./db/db.json", JSON.stringify(notes), (err) => {
-        if (err) throw (err);
-    });
 
-    res.json(notes);
+        // let newNotes;
+        // if (req.body.id === -1) {
+        let id = notes.length + 1;
+        let newNotes = { title: req.body.title, text: req.body.text, id: id };
+        notes.push(newNotes);
+        // } else {
+        //     let newNotes = req.body;
+        //     for (let i = 0; i < notes.length; i++) {
+        //         if (newNotes.id === notes[i].id) {
+        //             notes.splice(i, 1, newNotes);
+        //         };
+        //     };
+        // };
+
+        fs.writeFile("./db/db.json", JSON.stringify(notes), (err) => {
+            if (err) throw (err);
+        });
+
+        res.json(notes);
+    });
 });
 
 // deletes note by id when requested
-router.delete("./notes/:id", (req, res) => {
-    let id = req.params.id;
-    fs.readFileSync('./db/db.json', (err, data) => {
+router.delete("/notes/:id", (req, res) => {
+    let id = parseInt(req.params.id);
+    fs.readFile('./db/db.json', 'utf8', (err, data) => {
         if (err) throw (err);
         notes = JSON.parse(data);
-    });
+        console.log(notes);
 
-    for (let i = 0; i < notes.length; i++) {
-        if (notes[i].id === id) {
-            notes.splice(i, 1);
+        for (let i = 0; i < notes.length; i++) {
+            if (notes[i].id === id) {
+                notes.splice(i, 1);
+            };
         };
-    };
 
-    fs.writeFile('./db/db.json', JSON.stringify(notes), (err) => {
-        if (err) throw (err);
+        fs.writeFile('./db/db.json', JSON.stringify(notes), (err) => {
+            if (err) throw (err);
+        });
+
+        res.json(notes);
     });
-
-    res.json(id);
 });
 
 module.exports = router;
